@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StudentAPI_Main.CustomActionFilters;
 using StudentAPI_Main.Data;
 using StudentAPI_Main.Domain.DTO;
 using StudentAPI_Main.Domain.Models;
@@ -54,20 +55,16 @@ namespace StudentAPI_Main.Controllers
         //POST req for creating student 
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> CreateStudent([FromBody] CreateStudentDto createStudentDto)
         {
-            if(ModelState.IsValid)
-            {
-                var studentDomainModel = mapper.Map<Student>(createStudentDto);
+           
+            var studentDomainModel = mapper.Map<Student>(createStudentDto);
 
-                var student = await studentRepository.CreateStudentsAsync(studentDomainModel);
+            var student = await studentRepository.CreateStudentsAsync(studentDomainModel);
 
-                return CreatedAtAction(nameof(GetStudentById), new { id = studentDomainModel.Id }, createStudentDto);
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
+            return CreatedAtAction(nameof(GetStudentById), new { id = studentDomainModel.Id }, createStudentDto);
+           
           
         }
 
@@ -89,8 +86,10 @@ namespace StudentAPI_Main.Controllers
         //Update Student
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> UpdateStudent([FromRoute] Guid id, [FromBody] UpdateStudentDto updateStudentDto)
         {
+           
             var studentDomainModel = mapper.Map<Student>(updateStudentDto);
 
             var student = await studentRepository.UpdateStudentsAsync(id, studentDomainModel);
@@ -101,6 +100,8 @@ namespace StudentAPI_Main.Controllers
             }
 
             return Ok(mapper.Map<StudentDto>(student));
+         
+           
         }
 
 

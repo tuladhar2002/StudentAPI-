@@ -16,7 +16,7 @@ namespace StudentAPI_Main.Domain.DTO
         [Required(ErrorMessage = "Date of Birth is required feild")]
         public DateTime DOB { get; set; }
 
-        public Guid ClassId { get; set; }
-        public Guid RankingId { get; set; }
+        public Guid? ClassId { get; set; }
+        public Guid? RankingId { get; set; }
     }
 }
