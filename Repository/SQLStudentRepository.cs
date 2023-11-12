@@ -32,7 +32,7 @@ namespace StudentAPI_Main.Repository
         //get student by id 
         public async Task<Student?> GetStudentByIdAsync(Guid id)
         {
-            var studentDomainModel = await dbContext.Students.FirstOrDefaultAsync(x => x.Id == id);
+            var studentDomainModel = await dbContext.Students.Include("Class").Include("Ranking").FirstOrDefaultAsync(x => x.Id == id);
 
             if (studentDomainModel == null)
             {

@@ -30,11 +30,11 @@ namespace StudentAPI_Main.Controllers
                 var studentsDomainModel = await studentRepository.GetAllStudentsAsync();
 
                 return Ok(mapper.Map<List<StudentDto>>(studentsDomainModel)); //200 with studentDTO
-            }catch (Exception ex)
+            } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
 
         //Get student by id
@@ -62,6 +62,23 @@ namespace StudentAPI_Main.Controllers
 
             return CreatedAtAction(nameof(GetStudentById), new { id = studentDomainModel.Id }, createStudentDto);
 
+        }
+
+        //Update Student
+        [HttpPut]
+        [Route("{id: Guid}")]
+        public async Task<IActionResult> UpdateStudent([FromRoute]Guid id, [FromBody]UpdateStudentDto updateStudentDto)
+        {
+            var studentDomainModel = mapper.Map<Student>(updateStudentDto);
+
+            var student = await studentRepository.UpdateStudentsAsync(id, studentDomainModel);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(mapper.Map<StudentDto>(student));
         }
     }
 }
