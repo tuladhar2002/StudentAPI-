@@ -23,12 +23,13 @@ namespace StudentAPI_Main.Controllers
         }
 
         //getAll Action
-        [HttpGet] // api/Students?filterOn=Name&filterQuery=Track
-        public async Task<IActionResult> GetAllStudents([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
+        [HttpGet] // api/Students?filterOn=Name&filterQuery=Track&sortBy=Name&isAscending=true
+        public async Task<IActionResult> GetAllStudents([FromQuery] string? filterOn, [FromQuery] string? filterQuery
+            ,[FromQuery] string? sortBy, [FromQuery] bool isAscending)
         {
             try
             {
-                var studentsDomainModel = await studentRepository.GetAllStudentsAsync(filterOn, filterQuery);
+                var studentsDomainModel = await studentRepository.GetAllStudentsAsync(filterOn, filterQuery, sortBy, isAscending);
 
                 return Ok(mapper.Map<List<StudentDto>>(studentsDomainModel)); //200 with studentDTO
             } catch (Exception ex)

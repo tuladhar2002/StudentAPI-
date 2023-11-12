@@ -40,7 +40,8 @@ namespace StudentAPI_Main.Repository
         }
 
         //get all students
-        public async Task<List<Student>> GetAllStudentsAsync(string? filterOn = null, string? filterQuery = null)
+        public async Task<List<Student>> GetAllStudentsAsync(string? filterOn = null, string? filterQuery = null,
+             string? sortBy = null, bool isAscending = true)
         {
            
             var students = dbContext.Students.Include("Class").Include("Ranking").AsQueryable();
@@ -51,7 +52,7 @@ namespace StudentAPI_Main.Repository
                 //filter by name
                 if(filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase)) //check if the entity 'Name' is present in DBS & ignorecase
                 {
-                    students = students.Where(x => x.Name.Equals(filterQuery)); //checks each dbs row 'Name' entity with filterQuery field and stores if equals within students
+                    students = students.Where(x => x.Name.Contains(filterQuery)); //checks each dbs row 'Name' entity with filterQuery field and stores if equals within students
                 }
                 //filter by email
                 if (filterOn.Equals("Email", StringComparison.OrdinalIgnoreCase)) //check if the entity 'Email' is present in DBS & ignorecase
@@ -60,6 +61,15 @@ namespace StudentAPI_Main.Repository
                 }
             }
 
+            //sorting
+             if(string.IsNullOrWhiteSpace(sortBy)==false) //check sortBy if is empty
+            {
+                if(sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase)) //check if sortBy Name
+                {
+                    students = isAscending ? students.OrderBy(x => x.Name): students.OrderByDescending(x=>x.Name);
+                }
+            }
+              
 
             return await students.ToListAsync(); //return in list format
         }
