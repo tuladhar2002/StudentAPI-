@@ -40,10 +40,30 @@ namespace StudentAPI_Main.Repository
         }
 
         //get all students
-        public async Task<List<Student>> GetAllStudentsAsync()
+        public async Task<List<Student>> GetAllStudentsAsync(string? filterOn = null, string? filterQuery = null)
         {
-            return await dbContext.Students.Include("Class").Include("Ranking").ToListAsync();
+           
+            var students = dbContext.Students.Include("Class").Include("Ranking").AsQueryable();
+
+            //filtering
+            if(string.IsNullOrWhiteSpace(filterOn)==false && string.IsNullOrWhiteSpace(filterQuery)==false)
+            {
+                //filter by name
+                if(filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase)) //check if the entity 'Name' is present in DBS & ignorecase
+                {
+                    students = students.Where(x => x.Name.Equals(filterQuery)); //checks each dbs row 'Name' entity with filterQuery field and stores if equals within students
+                }
+                //filter by email
+                if (filterOn.Equals("Email", StringComparison.OrdinalIgnoreCase)) //check if the entity 'Email' is present in DBS & ignorecase
+                {
+                    students = students.Where(x => x.Email.Contains(filterQuery)); //checks each dbs row 'Email' entity with filterQuery field and stores if equals within students
+                }
+            }
+
+
+            return await students.ToListAsync(); //return in list format
         }
+
 
         //get student by id 
         public async Task<Student?> GetStudentByIdAsync(Guid id)
@@ -57,6 +77,7 @@ namespace StudentAPI_Main.Repository
 
             return studentDomainModel;
         }
+
         //update student
         public async Task<Student?> UpdateStudentsAsync(Guid studentId, Student student)
         {

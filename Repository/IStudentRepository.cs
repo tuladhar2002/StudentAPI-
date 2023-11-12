@@ -4,7 +4,7 @@ namespace StudentAPI_Main.Repository
 {
     public interface IStudentRepository
     {
-        Task<List<Student>> GetAllStudentsAsync();
+        Task<List<Student>> GetAllStudentsAsync(string? filterOn=null, string? filterQuery=null);
         Task<Student?> GetStudentByIdAsync(Guid id);
         Task<Student> CreateStudentsAsync(Student student);
 
