@@ -12,6 +12,7 @@ namespace StudentAPI_Main.Mapping
             CreateMap<Student, CreateStudentDto>().ReverseMap();
             CreateMap<Class, ClassDto>().ReverseMap();
             CreateMap<Ranking, RankingDto>().ReverseMap();
+            CreateMap<Student, UpdateStudentDto>().ReverseMap();
 
         }
     }

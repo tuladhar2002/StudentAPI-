@@ -23,6 +23,22 @@ namespace StudentAPI_Main.Repository
             return student;
         }
 
+        //Delete Student
+        public async Task<Student?> DeleteStudentsAsync(Guid id)
+        {
+            var studentDomainModel = await dbContext.Students.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (studentDomainModel == null)
+            {
+                return null;
+            }
+
+            dbContext.Students.Remove(studentDomainModel);
+            await dbContext.SaveChangesAsync();
+
+            return studentDomainModel;
+        }
+
         //get all students
         public async Task<List<Student>> GetAllStudentsAsync()
         {
@@ -38,6 +54,26 @@ namespace StudentAPI_Main.Repository
             {
                 return null;
             }
+
+            return studentDomainModel;
+        }
+        //update student
+        public async Task<Student?> UpdateStudentsAsync(Guid studentId, Student student)
+        {
+            var studentDomainModel = await dbContext.Students.FirstOrDefaultAsync(x => x.Id == studentId);
+
+            if (studentDomainModel == null)
+            {
+                return null;
+            }
+
+            studentDomainModel.Name = student.Name;
+            studentDomainModel.Email = student.Email;
+            studentDomainModel.DOB = student.DOB;
+            studentDomainModel.ClassId = student.ClassId;
+            studentDomainModel.Ranking = student.Ranking;
+
+            await dbContext.SaveChangesAsync();
 
             return studentDomainModel;
         }

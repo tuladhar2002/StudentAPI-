@@ -56,18 +56,40 @@ namespace StudentAPI_Main.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateStudent([FromBody] CreateStudentDto createStudentDto)
         {
-            var studentDomainModel = mapper.Map<Student>(createStudentDto);
+            if(ModelState.IsValid)
+            {
+                var studentDomainModel = mapper.Map<Student>(createStudentDto);
 
-            var student = await studentRepository.CreateStudentsAsync(studentDomainModel);
+                var student = await studentRepository.CreateStudentsAsync(studentDomainModel);
 
-            return CreatedAtAction(nameof(GetStudentById), new { id = studentDomainModel.Id }, createStudentDto);
+                return CreatedAtAction(nameof(GetStudentById), new { id = studentDomainModel.Id }, createStudentDto);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+          
+        }
 
+        //Delete Student
+        [HttpDelete]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> DeleteStudent([FromRoute] Guid id)
+        {
+            var studentDomainModel = await studentRepository.DeleteStudentsAsync(id);
+
+            if (studentDomainModel == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(mapper.Map<StudentDto>(studentDomainModel));
         }
 
         //Update Student
         [HttpPut]
-        [Route("{id: Guid}")]
-        public async Task<IActionResult> UpdateStudent([FromRoute]Guid id, [FromBody]UpdateStudentDto updateStudentDto)
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> UpdateStudent([FromRoute] Guid id, [FromBody] UpdateStudentDto updateStudentDto)
         {
             var studentDomainModel = mapper.Map<Student>(updateStudentDto);
 
@@ -80,5 +102,7 @@ namespace StudentAPI_Main.Controllers
 
             return Ok(mapper.Map<StudentDto>(student));
         }
+
+
     }
 }
